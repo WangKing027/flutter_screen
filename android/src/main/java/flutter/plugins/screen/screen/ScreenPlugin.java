@@ -7,6 +7,8 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -17,17 +19,15 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * ScreenPlugin
  */
-public class ScreenPlugin implements FlutterPlugin, MethodCallHandler {
+public class ScreenPlugin implements FlutterPlugin, MethodCallHandler , ActivityAware {
 
     private Activity activity ;
     private MethodChannel methodChannel ;
 
-    private ScreenPlugin(Activity activity){
-        this.activity = activity;
-    }
+    private ScreenPlugin(){}
 
     public static void registerWith(Registrar registrar) {
-        final ScreenPlugin instance = new ScreenPlugin(registrar.activity());
+        final ScreenPlugin instance = new ScreenPlugin();
         instance.onAttachedToEngine(registrar.messenger());
     }
 
@@ -94,7 +94,21 @@ public class ScreenPlugin implements FlutterPlugin, MethodCallHandler {
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         methodChannel.setMethodCallHandler(null);
         methodChannel = null ;
-        activity = null ;
     }
 
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        this.activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {}
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        this.activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivity() {}
 }
