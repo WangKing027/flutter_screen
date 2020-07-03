@@ -24,7 +24,7 @@ public class ScreenPlugin implements FlutterPlugin, MethodCallHandler , Activity
     private Activity activity ;
     private MethodChannel methodChannel ;
 
-    private ScreenPlugin(){}
+    public ScreenPlugin(){}
 
     public static void registerWith(Registrar registrar) {
         final ScreenPlugin instance = new ScreenPlugin();
